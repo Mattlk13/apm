@@ -33,7 +33,7 @@
     "mv": "2.0.0",
     "ncp": "~0.5.1",
     "npm": "3.10.5",
-    "open": "0.0.4",
+    "open": "6.0.0",
     "plist": "git+https://github.com/nathansobo/node-plist.git",
     "q": "~0.9.7",
     "read": "~1.0.5",

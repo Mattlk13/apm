@@ -1,0 +1,49 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:extend:20180424':
+    - npm > request > extend:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-registry-client > request > extend:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-lifecycle > node-gyp > request > extend:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > libcipm > npm-lifecycle > node-gyp > request > extend:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > node-gyp > request > extend:
+        patched: '2019-06-20T01:51:55.165Z'
+  'npm:hoek:20180212':
+    - npm > npm-registry-client > request > hawk > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > node-gyp > request > hawk > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-registry-client > request > hawk > sntp > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > node-gyp > request > hawk > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-lifecycle > node-gyp > request > hawk > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > libcipm > npm-lifecycle > node-gyp > request > hawk > cryptiles > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-registry-client > request > hawk > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > node-gyp > request > hawk > cryptiles > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > libcipm > npm-lifecycle > node-gyp > request > hawk > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-lifecycle > node-gyp > request > hawk > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-registry-client > request > hawk > cryptiles > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-lifecycle > node-gyp > request > hawk > sntp > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > npm-lifecycle > node-gyp > request > hawk > cryptiles > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > libcipm > npm-lifecycle > node-gyp > request > hawk > sntp > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > libcipm > npm-lifecycle > node-gyp > request > hawk > boom > hoek:
+        patched: '2019-06-20T01:51:55.165Z'
+    - npm > node-gyp > request > hawk > sntp > hoek:
+        patched: '2019-06-20T01:51:55.165Z'

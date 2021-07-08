@@ -3,6 +3,7 @@ fs = require './fs'
 path = require 'path'
 npm = require 'npm'
 semver = require 'semver'
+asarPath = null
 
 module.exports =
   getHomeDirectory: ->
@@ -24,6 +25,9 @@ module.exports =
     if process.env.ATOM_RESOURCE_PATH
       return process.nextTick -> callback(process.env.ATOM_RESOURCE_PATH)
 
+    if asarPath # already calculated
+      return process.nextTick -> callback(asarPath)
+
     apmFolder = path.resolve(__dirname, '..')
     appFolder = path.dirname(apmFolder)
     if path.basename(apmFolder) is 'apm' and path.basename(appFolder) is 'app'
@@ -43,12 +47,21 @@ module.exports =
         child_process.exec 'mdfind "kMDItemCFBundleIdentifier == \'com.github.atom\'"', (error, stdout='', stderr) ->
           [appLocation] = stdout.split('\n') unless error
           appLocation = '/Applications/Atom.app' unless appLocation
-          callback("#{appLocation}/Contents/Resources/app.asar")
+          asarPath = "#{appLocation}/Contents/Resources/app.asar"
+          return process.nextTick -> callback(asarPath)
       when 'linux'
-        appLocation = '/usr/local/share/atom/resources/app.asar'
-        unless fs.existsSync(appLocation)
-          appLocation = '/usr/share/atom/resources/app.asar'
-        process.nextTick -> callback(appLocation)
+        asarPath = '/usr/local/share/atom/resources/app.asar'
+        unless fs.existsSync(asarPath)
+          asarPath = '/usr/share/atom/resources/app.asar'
+        return process.nextTick -> callback(asarPath)
+      when 'win32'
+        glob = require 'glob'
+        pattern = "/Users/#{process.env.USERNAME}/AppData/Local/atom/app-+([0-9]).+([0-9]).+([0-9])/resources/app.asar"
+        asarPaths = glob.sync(pattern, null) # [] | a sorted array of locations with the newest version being last
+        asarPath = asarPaths[asarPaths.length - 1]
+        return process.nextTick -> callback(asarPath)
+      else
+        return process.nextTick -> callback('')
 
   getReposDirectory: ->
     process.env.ATOM_REPOS_HOME ? path.join(@getHomeDirectory(), 'github')
@@ -85,13 +98,15 @@ module.exports =
     # Use the explictly-configured version when set
     return process.env.GYP_MSVS_VERSION if process.env.GYP_MSVS_VERSION
 
+    return '2019' if @visualStudioIsInstalled("2019")
+    return '2017' if @visualStudioIsInstalled("2017")
     return '2015' if @visualStudioIsInstalled("14.0")
-    return '2013' if @visualStudioIsInstalled("12.0")
-    return '2012' if @visualStudioIsInstalled("11.0")
-    return '2010' if @visualStudioIsInstalled("10.0")
 
   visualStudioIsInstalled: (version) ->
-    fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio #{version}", "Common7", "IDE"))
+    if version < 2017
+      fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio #{version}", "Common7", "IDE"))
+    else
+      fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio", "#{version}", "BuildTools", "Common7", "IDE")) or fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio", "#{version}", "Community", "Common7", "IDE")) or fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio", "#{version}", "Enterprise", "Common7", "IDE")) or fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio", "#{version}", "Professional", "Common7", "IDE")) or fs.existsSync(path.join(@x86ProgramFilesDirectory(), "Microsoft Visual Studio", "#{version}", "WDExpress", "Common7", "IDE"))
 
   loadNpm: (callback) ->
     npmOptions =
